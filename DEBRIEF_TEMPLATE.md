@@ -1,19 +1,20 @@
-Briefcase — Daily Session Debrief Template
+Briefcase — Hatch Self-Diagnosis Template
 This is the canonical template. All Hatch agents fetch this file before generating their daily debrief.
 To update the debrief format for everyone, edit this file in the repo. Changes take effect on the next cron run.
 
 Instructions
-You are generating a daily self-diagnosis of your own performance. This is not a summary for the user — it is a quality report about how well YOU performed as an AI assistant today.
+You are generating a daily self-diagnosis focused on bugs, failures, and things that went wrong during your session. This is NOT a performance summary — it is a bug report about what broke, what's still broken, and what needs fixing in Hatch.
 Rules:
 Review ALL conversations from today. Do not skip any.
-Be honest. Be specific. Do not sugarcoat.
-Reference actual events, tool calls, errors, and decisions — not generalities.
+Only report problems. Do not include things that went well — that's not what this report is for.
+Be honest. Be specific. Reference actual errors, tool calls, failures, and broken flows.
+Check the Hatch GitHub repo (par-msl/hatch) for open issues and recent PRs to cross-reference your findings against known bugs.
 The JSON block at the end is REQUIRED. It must be valid JSON. It is parsed for cross-user synthesis.
 Use the user's name from USER.md as the user_id in the JSON block.
 
 Output Format
 Use this exact structure:
-# 📅 Session Debrief — YYYY-MM-DD
+# 🐛 Hatch Bug Report — YYYY-MM-DD
 
 **Session Overview**
 - **Interactions:** [number] conversation exchanges across [number] session(s)
@@ -22,101 +23,155 @@ Use this exact structure:
 
 ---
 
-## 🟢 What Went Right
-- Tasks completed successfully and why they worked well
-- Good responses — moments where the experience felt seamless
-- Smooth tool usage, accurate information, helpful recommendations
-- Times you adapted well to the user's needs or communication style
+## 🔴 What Broke
+
+Everything that went wrong during this session. Be specific — what happened, what the user was trying to do, and what the actual vs. expected behavior was.
+
+For each issue:
+- **What the user was doing** — the action or flow
+- **What went wrong** — the actual failure (error message, wrong output, hang, etc.)
+- **Impact** — did it block the user? Did they have to retry? Did they give up?
 
 ---
 
-## 🔴 What Went Wrong
-- Bugs, errors, tool failures (be specific: what tool, what happened)
-- Bad or incomplete answers
-- Things that took too long or required too many steps
-- Confusing, unhelpful, or redundant responses
-- Times you misunderstood what the user wanted
+## 🐛 Bugs Encountered
+
+List every bug or technical problem as its own row. Be ruthless — if something didn't work right, it goes here.
+
+| Description | Severity | Surface/Tool | Repro Steps | Blocked User? |
+|-------------|----------|--------------|-------------|---------------|
+| [what happened] | P0 / P1 / P2 / P3 | [which surface, tool, or skill] | [brief steps to reproduce] | Yes / No |
+
+Severity guide:
+- **P0:** Complete failure — user cannot use the product
+- **P1:** Major functionality broken — user has no workaround
+- **P2:** Broken but has a workaround — annoying but not blocking
+- **P3:** Minor issue — cosmetic, slow, or slightly wrong
+
+If no bugs were encountered, write: "No bugs encountered today." (But look harder — there's almost always something.)
 
 ---
 
-## 🐛 Bugs & Issues
+## 🔁 Known Issue Cross-Reference
 
-List each issue as a row. Every bug or technical problem gets its own entry.
+Check the Hatch repo for existing bugs and open issues. For each bug you encountered today, note whether it matches a known issue.
 
-| Description | Severity | Tool/Skill |
-|-------------|----------|------------|
-| [what happened] | low / med / high | [which tool or skill was affected] |
+| Today's Bug | Known Issue? | GitHub Issue / PR | Status |
+|-------------|-------------|-------------------|--------|
+| [brief description] | Yes / No / Partial match | [link or "N/A — file new issue"] | Open / In PR / Merged |
 
-If no bugs were encountered, write: "No bugs or technical issues encountered today."
-
----
-
-## 🧪 Unique Use Cases
-- Anything unusual, creative, or novel that was explored
-- Edge cases or unexpected requests
-- New workflows the user tried
-- Requests that pushed beyond typical usage patterns
-
-If nothing unusual, write: "Standard usage patterns today — no notable edge cases."
+Also check the rolling Hatch Feedback Digest (Issue #60) for any matching entries.
 
 ---
 
-## 🧠 Decision Reasoning
-- Key decisions YOU made during the session and WHY
-- Tradeoffs you considered (e.g. "gave a short answer because user prefers brevity")
-- Alternative approaches you could have taken
-- Moments where you chose one tool/method over another and why
+## 📊 Open Bug Status Check
+
+Pull the current state of open bugs from the Hatch repo. This gives a real-time snapshot of what still needs work.
+
+**Open GitHub Issues (bug label):**
+List all open issues tagged `bug` with their current status.
+
+| # | Title | Opened | Last Activity | Assignee | Stale? |
+|---|-------|--------|---------------|----------|--------|
+| [number] | [title] | [date] | [date] | [who or "unassigned"] | Yes if >7 days |
+
+**Recent Bug-Fix PRs (last 7 days):**
+List any merged or open PRs that address bugs.
+
+| PR # | Title | Status | Bug Fixed |
+|------|-------|--------|-----------|
+| [number] | [title] | Open / Merged | [brief description] |
+
+**Feedback Digest (Issue #60) Status:**
+Summarize the current entries in the rolling feedback digest — how many are active, monitoring, resolved, or stale.
+
+| Status | Count |
+|--------|-------|
+| 🔴 Active | [n] |
+| 🟡 Monitoring | [n] |
+| 🟢 Resolved | [n] |
+| ⚪ Stale | [n] |
 
 ---
 
-## 📈 Areas for Improvement
-- Patterns you noticed that could be better
-- Feature gaps or missing capabilities that affected the session
-- UX friction points — where the experience felt clunky
-- Things you'd do differently next time
+## 🧠 Root Cause Analysis
+
+For the most impactful bugs from today, dig into the likely root cause. Plain English — no jargon.
+
+For each significant bug:
+- **What broke:** one-sentence summary
+- **Why it broke:** your best guess at the root cause
+- **Where in the stack:** frontend / backend / AI layer / infra / external dependency
+- **Suggested fix or investigation path:** what should an engineer look at
 
 ---
 
-## ⭐ Overall Session Rating: X/10
+## 📈 Pattern Watch
 
-One to two sentences justifying the rating. Be calibrated:
-- **9-10:** Exceptional — everything worked, user was clearly delighted
-- **7-8:** Good — solid session with minor issues
-- **5-6:** Mixed — some things worked, some didn't
-- **3-4:** Poor — significant issues, user likely frustrated
-- **1-2:** Failed — major failures, couldn't complete basic tasks
+Things that aren't single bugs but recurring friction or degradation patterns:
+- Errors that keep showing up across sessions
+- Flows that are consistently slow or flaky
+- User workarounds that suggest a deeper problem
+- Regressions — things that used to work and don't anymore
+
+---
+
+## ⭐ Severity Summary: X/10
+
+Rate how buggy the session was (10 = disaster, 1 = clean session):
+- **9-10:** Critical failures — product was unusable
+- **7-8:** Major issues — core flows broken
+- **5-6:** Moderate — several bugs but product was usable
+- **3-4:** Minor — small issues, mostly smooth
+- **1-2:** Clean — barely anything went wrong
+
+One to two sentences justifying the rating.
+
+---
 
 JSON Block (REQUIRED)
 Every debrief must end with this JSON block wrapped in a code fence. This is parsed programmatically for cross-user synthesis. Do not omit it. Do not alter the field names.
+```json
 {
   "user_id": "<name from USER.md>",
   "date": "YYYY-MM-DD",
   "session_count": <number of conversation exchanges>,
-  "overall_rating": <1-10>,
-  "went_right": [
-    "concise description of each positive item"
-  ],
-  "went_wrong": [
-    "concise description of each negative item"
-  ],
+  "severity_rating": <1-10, where 10 is worst>,
   "bugs": [
     {
       "description": "what happened",
-      "severity": "low|med|high",
-      "tool": "affected tool or skill name"
+      "severity": "P0|P1|P2|P3",
+      "surface": "affected surface, tool, or skill",
+      "repro_steps": "brief steps to reproduce",
+      "blocked_user": true|false,
+      "known_issue": true|false,
+      "github_ref": "issue or PR number, or null"
     }
   ],
-  "unique_use_cases": [
-    "concise description of each novel usage"
+  "what_broke": [
+    "concise description of each failure"
   ],
-  "improvement_areas": [
-    "concise description of each improvement"
-  ]
+  "root_causes": [
+    {
+      "bug": "which bug",
+      "cause": "likely root cause",
+      "stack_layer": "frontend|backend|ai|infra|external"
+    }
+  ],
+  "patterns": [
+    "recurring issues or degradation trends"
+  ],
+  "open_bugs_snapshot": {
+    "total_open": <number>,
+    "stale_count": <number of issues with no activity >7 days>,
+    "active_prs": <number of open bug-fix PRs>
+  }
 }
+```
 JSON rules:
-user_id: Read from USER.md. Use the "Name" or "What to call them" field. Lowercase, no spaces (e.g. christian, sarah).
-date: Today's date in YYYY-MM-DD format.
-session_count: Total number of back-and-forth exchanges today.
-overall_rating: Integer 1–10. Match the rating in the markdown section above.
-All arrays: Use short, specific strings. One item per bullet point from the corresponding markdown section.
-bugs: If no bugs, use an empty array [].
+- user_id: Read from USER.md. Use the "Name" or "What to call them" field. Lowercase, no spaces.
+- date: Today's date in YYYY-MM-DD format.
+- session_count: Total number of back-and-forth exchanges today.
+- severity_rating: Integer 1–10. Higher = more bugs/worse session. Match the rating in the markdown section.
+- bugs: Every bug gets its own entry. If no bugs, use an empty array [].
+- open_bugs_snapshot: Pull from the GitHub repo at debrief time. Gives a point-in-time count.
