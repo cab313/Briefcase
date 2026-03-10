@@ -11,6 +11,7 @@ Rules:
 - Only surface bugs that meaningfully hurt the user experience. Skip cosmetic nitpicks, minor slowness, or one-off flukes that won't recur.
 - Ask yourself: "Would fixing this noticeably improve Hatch for users?" If no, leave it out.
 - For every bug you surface, check https://github.com/par-msl/hatch for open PRs, recent merges, or known issues that match. Search PR titles, descriptions, and changed files.
+- **NO personal or sensitive information.** Do not include user names, email addresses, phone numbers, account IDs, message content, file contents, passwords, tokens, or any PII/PHI in the report. Keep descriptions high-level — describe the bug and the flow, never the user's actual data. If a bug involves specific user content, describe the type of content generically (e.g. "a photo upload" not the actual photo or caption).
 - The JSON block at the end is REQUIRED and must be valid JSON.
 - Use the user's name from USER.md as the user_id.
 
