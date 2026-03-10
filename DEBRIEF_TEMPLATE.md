@@ -10,7 +10,7 @@ Rules:
 - Be brief. This is a targeted bug report, not a brain dump.
 - Only surface bugs that meaningfully hurt the user experience. Skip cosmetic nitpicks, minor slowness, or one-off flukes that won't recur.
 - Ask yourself: "Would fixing this noticeably improve Hatch for users?" If no, leave it out.
-- For every bug you surface, check https://github.com/par-msl/hatch for open PRs or recent merges that might already fix it. Search PR titles, descriptions, and changed files.
+- For every bug you surface, check https://github.com/par-msl/hatch for open PRs, recent merges, or known issues that match. Search PR titles, descriptions, and changed files.
 - The JSON block at the end is REQUIRED and must be valid JSON.
 - Use the user's name from USER.md as the user_id.
 
@@ -25,11 +25,11 @@ Use this exact structure:
 
 ## Bugs
 
-The bugs that matter. Each one should be something that, if fixed, would meaningfully improve the experience.
+The bugs that matter, stack ranked by severity. Each one should be something that, if fixed, would meaningfully improve the experience. Include whether a known issue or fixing PR already exists in https://github.com/par-msl/hatch.
 
-| Bug | Severity | Surface | What Happened | Fixing PR? |
-|-----|----------|---------|---------------|------------|
-| [short title] | P0/P1/P2/P3 | [area] | [1-2 sentences: what the user was doing, what went wrong] | [PR link] or "None" |
+| # | Bug | Severity | What Happened | Known Issue / PR |
+|---|-----|----------|---------------|------------------|
+| 1 | [short title] | P0/P1/P2/P3 | [1-2 sentences: what the user was doing, what went wrong] | [issue/PR link] or "None" |
 
 Severity guide:
 - **P0:** Product unusable
@@ -37,27 +37,31 @@ Severity guide:
 - **P2:** Broken but user can work around it
 - **P3:** Annoying but minor
 
+**Severity summary:** X/10 — one sentence justifying the rating (10 = disaster, 1 = clean).
+
 If no meaningful bugs: "Clean session — no significant issues."
 
 ---
 
-## Work In Flight
+## PRs
 
-What's already being addressed in https://github.com/par-msl/hatch and what's not. This tells engineers where to focus.
+Check https://github.com/par-msl/hatch for open and recently merged PRs relevant to the bugs above or to bug fixes in general. This gives a real-time view of what's being worked on.
 
-**Being fixed (has PR):**
+| PR | Title | Status | Fixes Bug # |
+|----|-------|--------|-------------|
+| [PR link] | [title] | Open / Draft / In Review / Merged | [bug # from table above, or "other"] |
 
-| Bug | PR | Status |
-|-----|----|--------|
-| [description] | [PR link] | Open / Draft / In Review / Merged |
+If no relevant PRs found: "No relevant PRs in flight."
 
-**Not being fixed (no PR — engineers should look here):**
+---
 
-| Bug | Severity | Suggested Area to Investigate |
-|-----|----------|-------------------------------|
-| [description] | P0/P1/P2/P3 | [component, file path, or flow to look at] |
+## Root Cause Analysis
 
-**Bottom line:** 1-2 sentences on what engineers should prioritize. Be direct.
+For the most impactful bugs above, a plain-English guess at why it's happening. Keep it short — one or two lines per bug.
+
+| Bug # | What Broke | Likely Cause | Stack Layer |
+|-------|-----------|--------------|-------------|
+| [#] | [one-sentence summary] | [plain-English root cause] | frontend / backend / AI / infra / external |
 
 ---
 
@@ -82,29 +86,26 @@ If nothing recurring: omit this section entirely.
     {
       "description": "short title",
       "severity": "P0|P1|P2|P3",
-      "surface": "affected area",
       "what_happened": "1-2 sentence summary",
-      "blocked_user": true|false,
+      "known_issue": "issue number or null",
       "fixing_pr": "PR number or null"
     }
   ],
-  "work_queue": {
-    "has_pr": [
-      {
-        "bug": "short description",
-        "pr_number": <number>,
-        "pr_status": "open|draft|in_review|merged"
-      }
-    ],
-    "needs_fix": [
-      {
-        "bug": "short description",
-        "severity": "P0|P1|P2|P3",
-        "suggested_area": "where to investigate"
-      }
-    ],
-    "priority_recommendation": "what engineers should work on first"
-  },
+  "prs": [
+    {
+      "pr_number": <number>,
+      "title": "PR title",
+      "status": "open|draft|in_review|merged",
+      "fixes_bug": "bug description or null"
+    }
+  ],
+  "root_causes": [
+    {
+      "bug": "which bug",
+      "cause": "likely root cause",
+      "stack_layer": "frontend|backend|ai|infra|external"
+    }
+  ],
   "patterns": [
     "recurring issues only — omit if none"
   ]
@@ -113,6 +114,7 @@ If nothing recurring: omit this section entirely.
 JSON rules:
 - user_id: From USER.md, lowercase, no spaces.
 - severity_rating: 1–10. Higher = worse session.
-- bugs: Only meaningful bugs. Empty array [] if clean session.
-- work_queue.needs_fix: The most important part — unfixed bugs sorted by severity.
+- bugs: Only meaningful bugs, sorted by severity. Empty array [] if clean session.
+- prs: Relevant PRs from par-msl/hatch. Empty array [] if none found.
+- root_causes: Only for impactful bugs. Empty array [] if clean session.
 - patterns: Only recurring issues. Empty array [] if nothing recurring.
