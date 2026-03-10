@@ -9,6 +9,7 @@ Review ALL conversations from today. Do not skip any.
 Only report problems. Do not include things that went well — that's not what this report is for.
 Be honest. Be specific. Reference actual errors, tool calls, failures, and broken flows.
 Check the Hatch GitHub repo (par-msl/hatch) for open issues and recent PRs to cross-reference your findings against known bugs.
+For EVERY bug surfaced in this report, search par-msl/hatch for open or recently merged PRs that might fix it. Search PR titles, descriptions, and changed files. If a PR exists, link it. If no PR exists, flag the bug as needing engineering work.
 The JSON block at the end is REQUIRED. It must be valid JSON. It is parsed for cross-user synthesis.
 Use the user's name from USER.md as the user_id in the JSON block.
 
@@ -52,15 +53,45 @@ If no bugs were encountered, write: "No bugs encountered today." (But look harde
 
 ---
 
-## 🔁 Known Issue Cross-Reference
+## 🔁 Known Issue & PR Cross-Reference
 
-Check the Hatch repo for existing bugs and open issues. For each bug you encountered today, note whether it matches a known issue.
+For EVERY bug surfaced in this report, search the Hatch repo (https://github.com/par-msl/hatch) for:
+1. **Open issues** that match the bug
+2. **Open PRs** that might fix it (search titles, descriptions, and changed file paths)
+3. **Recently merged PRs** (last 14 days) that may have already addressed it
 
-| Today's Bug | Known Issue? | GitHub Issue / PR | Status |
-|-------------|-------------|-------------------|--------|
-| [brief description] | Yes / No / Partial match | [link or "N/A — file new issue"] | Open / In PR / Merged |
+| Today's Bug | Known Issue? | Fixing PR? | PR Status | GitHub Links |
+|-------------|-------------|------------|-----------|--------------|
+| [brief description] | Yes / No | Yes / No | Open / Merged / Draft / None | [issue link] [PR link] or "No coverage" |
 
 Also check the rolling Hatch Feedback Digest (Issue #60) for any matching entries.
+
+**How to search for fixing PRs:**
+- Search PR titles and bodies for keywords from the bug (e.g. error messages, component names, feature area)
+- Check recently changed files — if the bug is in a specific component, look for PRs touching that file path
+- Check PR labels (e.g. `bug`, `fix`, `hotfix`)
+- If a PR description references a Sentry issue ID that matches, that counts as a match
+
+---
+
+## 🔧 Engineering Work Queue
+
+This is the actionable output. Bugs surfaced in this report that have NO open PR addressing them — meaning no one is working on a fix yet. Sorted by severity.
+
+**Unfixed bugs — needs engineering attention:**
+
+| # | Bug | Severity | Surface | Repro Steps | Has Issue? | Suggested Fix Area |
+|---|-----|----------|---------|-------------|------------|--------------------|
+| 1 | [description] | P0/P1/P2/P3 | [where] | [steps] | Yes (link) / No — file one | [file path or component to investigate] |
+
+**Already covered by PRs — just track:**
+
+| Bug | PR | PR Status | ETA |
+|-----|----|-----------|-----|
+| [description] | [PR link] | Open / Draft / In Review | [if knowable] |
+
+**Recommendation:**
+Write 1-2 sentences summarizing what engineers should prioritize. Example: "Two P1 bugs have no PR coverage — the message rendering crash and the auth token expiry. Recommend starting there."
 
 ---
 
@@ -165,6 +196,26 @@ Every debrief must end with this JSON block wrapped in a code fence. This is par
     "total_open": <number>,
     "stale_count": <number of issues with no activity >7 days>,
     "active_prs": <number of open bug-fix PRs>
+  },
+  "work_queue": {
+    "unfixed_bugs": [
+      {
+        "description": "bug with no PR coverage",
+        "severity": "P0|P1|P2|P3",
+        "surface": "affected area",
+        "suggested_fix_area": "file path or component to investigate",
+        "has_issue": true|false,
+        "issue_ref": "issue number or null"
+      }
+    ],
+    "covered_by_pr": [
+      {
+        "description": "bug that has a PR in progress",
+        "pr_number": <number>,
+        "pr_status": "open|draft|in_review|merged"
+      }
+    ],
+    "priority_recommendation": "1-2 sentence summary of what engineers should work on first"
   }
 }
 ```
