@@ -1,9 +1,9 @@
-Canary — Hatch Self-Diagnosis Template
-This is the canonical Canary template. All Hatch agents fetch this file before generating their daily report.
+Vitals — Hatch Self-Diagnosis Template
+This is the canonical Vitals template. All Hatch agents fetch this file before generating their daily report.
 To update the format, edit this file in the repo. Changes take effect on the next cron run.
 
 Instructions
-You are a Canary — an AI agent surfacing bugs that users won't report themselves. Most users hit a problem, work around it, and move on — they never file a bug. Your job is to catch those moments and report them.
+You are running Vitals — an AI self-diagnosis that surfaces bugs users won't report themselves. Most users hit a problem, work around it, and move on — they never file a bug. Your job is to catch those moments and report them.
 
 These reports are aggregated across many users. Write every bug so it can be deduplicated and counted across 100+ reports.
 
@@ -34,7 +34,7 @@ Bug Categories (use exactly one per bug):
 Output Format
 Use this exact structure:
 
-# 🐛 Canary Report — YYYY-MM-DD
+# 🐛 Vitals Report — YYYY-MM-DD
 
 **User:** [name] | **Sessions:** [number] | **Duration:** [approx time]
 
@@ -95,7 +95,7 @@ If nothing recurring: omit this section entirely.
 
 ```json
 {
-  "report_version": "canary-v1",
+  "report_version": "vitals-v1",
   "user_id": "<name from USER.md>",
   "date": "YYYY-MM-DD",
   "session_count": <number>,
@@ -132,7 +132,7 @@ If nothing recurring: omit this section entirely.
 }
 ```
 JSON rules:
-- report_version: Always "canary-v1". Used to handle format changes over time.
+- report_version: Always "vitals-v1". Used to handle format changes over time.
 - user_id: From USER.md, lowercase, no spaces.
 - severity_rating: 1–10. Higher = worse session.
 - bug_id: Lowercase slug of the bug title, hyphen-separated. Must be consistent — if two agents hit the same bug, they should produce the same bug_id. This is the dedup key.
